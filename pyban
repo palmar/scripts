@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+
+import socket 
+import sys
+import os
+
+
+if len(sys.argv) != 2:
+	print("Invalid number of Arguments")
+	sys.exit(0)	
+
+def valid_ipv4(address):
+	try:
+		socket.inet_aton(address)
+		return 1
+	except socket.error:
+#		print("Invalid IP Address")
+		return 0	
+
+def valid_ipv6(address):
+	try:
+		socket.inet_pton(socket.AF_INET6, address)
+		return 1
+	except socket.error:
+#		print("Not IPv6 either!")
+		return 0
+
+commandstring = "ufw insert 1 deny from " + sys.argv[1] + " comment pyban"
+		
+if valid_ipv4(sys.argv[1]) == 1:
+	print("Banning IP address: " + sys.argv[1])
+	os.system(commandstring)
+	sys.exit(0)
+elif valid_ipv6(sys.argv[1]) == 1:
+	print("Banning IPv6 address: " + sys.argv[1])
+	os.system(commandstring)
+	sys.exit(0)
+else:
+	print("Total failure!")
+	sys.exit(0)
